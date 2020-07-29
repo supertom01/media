@@ -1,0 +1,89 @@
+body {
+ min-height: 100vh;
+ min-width: 100vw;
+}
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-width: 100vw;
+    margin: 0;
+}
+.inputGroup {
+    position: relative;
+    height: 40px;
+    margin: 10px 0;
+}
+.inputGroup .icon, .inputGroup input {
+    position: absolute;
+}
+.inputGroup .icon {
+    background-color: #252a34;
+    width: 40px;
+    height: 40px;
+    z-index: 2;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.inputGroup .icon img {
+    width: 20px;
+    height: 20px;
+    margin: 10px;
+}
+#signIn {
+    background-color: #ff2e63;
+    border-radius: 20px;
+    width: 400px;
+    max-width: 100%;
+}
+#signIn h1 {
+    text-align: center;
+    font-size: 40px;
+}
+#signIn form {
+    width: calc(100% - 40px);
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+#signIn input {
+    width: calc(100% - 50px);
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    background-color: #eaeaea;
+    color: #252a34;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    padding: 0;
+    padding-left: 50px;
+    display: inline-block;
+}
+#signIn input[type=submit] {
+    padding: 0;
+    width: 100%;
+    cursor: pointer;
+    color: #ff2e63;
+}
+#signIn input[type=submit]:hover {
+    background-color: #252a34;
+    color: #eaeaea;
+}
+
+@media screen and (max-width: 400px) {
+    #signIn {
+	border-radius: 0;
+    }
+}
+
+::placeholder {
+    color: #252a34;
+}
+::-webkit-input-placeholder {
+    color: #252a34;
+}
+::-moz-placeholder {
+    color: #252a34;
+}

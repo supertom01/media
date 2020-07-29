@@ -1,0 +1,16 @@
+{
+  "name": "vendor_name/media2",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "meule",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "firebase/php-jwt": "5.2.*",
+    "steampixel/simple-php-router": ""
+  }
+}

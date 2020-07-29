@@ -1,0 +1,163 @@
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* BACK BUTTON */
+#back {
+    position: absolute;
+    text-decoration: none;
+    color: #eaeaea;
+    top: 20px;
+    left: 20px;
+}
+.button {
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #ff2e63;
+    display: grid;
+    grid-template-columns: 40px 60px;
+
+    -webkit-box-shadow: 0px 0px 25px 5px rgba(37,42,52,1);
+    -moz-box-shadow: 0px 0px 25px 5px rgba(37,42,52,1);
+    box-shadow: 0px 0px 25px 5px rgba(37,42,52,1);
+}
+.button img {
+    height: 20px;
+    width: 20px;
+    margin: 10px;
+}
+.button span {
+    align-self: center;
+    font-weight: bold;
+}
+
+/* FORM */
+form {
+    background-color: #ff2e63;
+    border-radius: 20px;
+    width: 900px;
+    text-align: center;
+}
+
+/* IMG & INPUTS */
+#content {
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+#content #image {
+    width: 100%;
+}
+#content #image img {
+    width: calc(100% - 20px);
+    margin: 10px 20px;
+    border-radius: 20px;
+}
+
+/* INPUT FIELDS */
+.inputGroup {
+    position: relative;
+    height: 40px;
+    width: calc(100% - 40px);
+    margin: 10px 20px;
+}
+.inputGroup .icon, .inputGroup input, .inputGroup .input, .inputGroup select {
+    position: absolute;
+    left: 0;
+}
+.inputGroup .icon {
+    background-color: #252a34;
+    width: 40px;
+    height: 40px;
+    z-index: 3;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.inputGroup .icon img {
+    width: 20px;
+    height: 20px;
+    margin: 10px;
+}
+form input, form select {
+    /* Make sure that all input elements adhere to the same sizes */
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+
+    height: 40px;    
+    padding: 0;
+
+    background-color: #eaeaea;
+    color: #252a34;
+    font-weight: bold;
+
+    border: none;
+    border-radius: 20px;
+}
+form input:not([type=submit]), form select {
+    padding-left: 50px;
+    width: calc(100% - 50px);
+}
+form input[type=submit] {
+    margin: 0 20px 10px 20px;
+    width: calc(100% - 40px);
+    color: #ff2e63;
+    cursor: pointer;
+}
+form input[type=submit]:hover {
+    background-color: #252a34;
+    color: #eaeaea;
+}
+
+/* File upload */
+form input[type=file] {
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+form input[type=file]::after {
+    width: 100px;
+    height: 40px;
+    background-color: black;
+}
+form .input {
+    width: 100%
+}
+form .input button {
+    height: 40px;
+    width: 100%;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    background-color: #252a34;
+    color: #eaeaea;
+}
+
+@media screen and (max-width: 900px) {
+    form {
+        border-radius: 0;
+    }
+    #content {
+        grid-template-columns: 100%;
+    }
+    #content #image img {
+        width: calc(100% - 40px);
+        margin: 0 20px;
+    }
+}
+
+::placeholder {
+    color: #252a34;
+    font-weight: bold;
+}
+::-webkit-input-placeholder {
+    color: #252a34;
+    font-weight: bold;
+}
+::-moz-placeholder {
+    color: #252a34;
+    font-weight: bold;
+}
