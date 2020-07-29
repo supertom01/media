@@ -2,6 +2,10 @@
 
 require_once "Database.php";
 require_once dirname(__DIR__, 1) . "/Exceptions/LoginException.php";
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+require_once "constants.php";
+
+use Firebase\JWT\JWT;
 
 /**
  * Class User.
@@ -36,6 +40,13 @@ class User {
         } else {
             throw new LoginException("Account not found!");
         }
+    }
+
+    /**
+     * TODO: Continue with JWT integration!
+     */
+    private function issueJWT() {
+        JWT::encode(array("username" => $this->username), JWT_SECRET);
     }
 
     /**

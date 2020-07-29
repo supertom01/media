@@ -12,6 +12,8 @@ It also makes of an JWT implementation which can be found at [php-jwt](https://g
 In order to make this system to work properly it should be connected to a SQLite database named media.db in the back-end folder of this project.
 It should already contain the provided schema as depicted in the schema.sql file in the root of this project.
 
+Define the file `constants.php` in the folder `back-end` and put in here the `JWT_SECRET` constant.
+
 ## Roadmap
 * Simple user-interface.
 * Account authorization.

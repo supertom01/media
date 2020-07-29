@@ -11,6 +11,7 @@
   ],
   "require": {
     "firebase/php-jwt": "5.2.*",
-    "steampixel/simple-php-router": ""
+    "steampixel/simple-php-router": "*",
+    "ext-sqlite3": "*"
   }
 }
