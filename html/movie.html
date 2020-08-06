@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie | Media</title>
+
+    <link rel="stylesheet" href="/media2/css/style.css">
+
+    <script src="/media2/js/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.getJSON(window.location.href, function(data) {
+                console.log(data);
+                $("h1").text(data.name);
+                $("title").text(data.name + " | Media");
+                $("body").append(
+                    "<video width='80%' controls>" +
+                        "<source src='/media2/" + data.path + "'>" +
+                    "</video>"
+                );
+                data.subtitles.forEach(sub => {
+                    $("video").append("<track kind='captions' src='/media2/subtitles/" + sub.sid + "' srclang='" + sub.language + "' />")
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1></h1>
+</body>
+</html>

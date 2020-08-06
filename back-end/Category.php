@@ -1,6 +1,8 @@
 <?php
 
 require_once "Database.php";
+require_once "Movie.php";
+require_once "Picture.php";
 
 /**
  * Class Category.
@@ -14,7 +16,7 @@ class Category {
     private Database $db;
     private int $id;
     private string $name;
-    private string $img;
+    private int $img;
     private array $access;
     private array $errors;
 
@@ -25,6 +27,8 @@ class Category {
     public function __construct(int $id) {
         $this->id = $id;
         $this->db = new Database();
+        $this->errors = array();
+        $this->access = array();
 
         try {
             $this->name = $this->db->preparedQuery("SELECT name FROM categories WHERE cid = ?",
@@ -34,14 +38,14 @@ class Category {
         }
 
         try {
-            $this->img = $this->db->preparedQuery("SELECT filepath FROM pictures, categories WHERE image = pid AND cid = ?",
-                array([$id, SQLITE3_INTEGER]))[0]["filepath"];
+            $this->img = $this->db->preparedQuery("SELECT image FROM categories WHERE cid = ?",
+                array([$id, SQLITE3_INTEGER]))[0]["image"];
         } catch (SQLException $e) {
             array_push($this->errors, $e->getMessage());
         }
 
         try {
-            $access = $this->db->preparedQuery("SELECT username FROM access, categories WHERE access.cid AND cid = ?",
+            $access = $this->db->preparedQuery("SELECT username FROM access a, categories c WHERE a.cid AND c.cid = ?",
                 array([$id, SQLITE3_INTEGER]));
             foreach ($access as $user) {
                 array_push($this->access, $user["username"]);
@@ -52,11 +56,19 @@ class Category {
 
     }
 
+    /**
+     * Get the name of this category.
+     * @return string   The name of this category.
+     */
     public function getName():string {
         return $this->name;
     }
 
-    public function getIMG():string {
+    /**
+     * Get the image id of the category.
+     * @return int      The id of the image.
+     */
+    public function getIMG():int {
         return $this->img;
     }
 
@@ -106,6 +118,79 @@ class Category {
     }
 
     /**
+     * Add a new movie to this category.
+     * @param Movie $movie  The movie to add.
+     * @return bool         True if successful, otherwise false.
+     */
+    public function addMovie(Movie $movie) {
+        try {
+            return $this->db->preparedUpdate("INSERT INTO movie_category (mid, cid) VALUES (?, ?)",
+                array([$movie->getId(), SQLITE3_INTEGER], [$this->id, SQLITE3_INTEGER]));
+        } catch (SQLException $e) {
+            array_push($this->errors, $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all the movies in this category.
+     * @return array        The array with all the movies.
+     */
+    public function getMovies():array {
+        try {
+            $result = $this->db->preparedQuery("SELECT mid FROM movie_category WHERE cid = ?",
+                array([$this->id, SQLITE3_INTEGER]));
+            $movies = array();
+            foreach($result as $movie) {
+                $m = new Movie(intval($movie['mid']));
+                array_push($movies, array(
+                    "mid" => $m->getId(),
+                    "name" => $m->getName(),
+                    "img" => $m->getIMG()
+                ));
+            }
+            return $movies;
+        } catch (SQLException $e) {
+            array_push($this->errors, $e->getMessage());
+            return array();
+        }
+    }
+
+    /**
+     * Add a new picture to this category.
+     * @param Picture $picture  The picture to add.
+     * @return bool             True if successful, otherwise false.
+     */
+    public function addPicture(Picture $picture) {
+        try {
+            return $this->db->preparedUpdate("INSERT INTO picture_category (pid, cid) VALUES (?, ?)",
+                array([$picture->getId(), SQLITE3_INTEGER], [$this->id, SQLITE3_INTEGER]));
+        } catch (SQLException $e) {
+            array_push($this->errors, $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all the pictures in this category.
+     * @return array    The array with all the pictures.
+     */
+    public function getPictures() {
+        try {
+            $result = $this->db->preparedQuery("SELECT pid FROM picture_category WHERE cid = ?",
+                array([$this->id, SQLITE3_INTEGER]));
+            $pictures = array();
+            foreach($result as $picture) {
+                array_push($pictures, new Picture(intval($picture['pid'])));
+            }
+            return $pictures;
+        } catch (SQLException $e) {
+            array_push($this->errors, $e->getMessage());
+            return array();
+        }
+    }
+
+    /**
      * Create a new category.
      * @param $name             string  The name of the new category
      * @param $img              string  The filepath to the image for the new category
@@ -127,6 +212,7 @@ class Category {
         // Add the name and pid of the new category to database.
         $success = $success && $db->preparedUpdate("INSERT INTO categories (name, image) VALUES (?, ?)",
             array([$name, SQLITE3_TEXT], [$pid, SQLITE3_INTEGER]));
+        $cid = $db->getDB()->lastInsertRowID();
 
         // Add initial access to this category for the users in the $usersSWithAccess array.
         foreach($usersWithAccess as $user) {
@@ -134,7 +220,26 @@ class Category {
                 array([$user, SQLITE3_TEXT], [$pid, SQLITE3_INTEGER]));
         }
 
+        // The person who has created this category should of course have access to it.
+        if($success) {
+            $c = new Category($cid);
+            $c->addAccess(Token::getUsername());
+        }
+
         return $success;
+    }
+
+    /**
+     * Get all the categories in the system.
+     * @return array The array with category names, ids and images.
+     */
+    public static function getAll():?array {
+        $db = new Database();
+        try {
+            return $db->executeQuery("SELECT cid, name, image FROM categories c");
+        } catch (SQLException $e) {
+            return null;
+        }
     }
 
     /**

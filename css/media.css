@@ -35,28 +35,27 @@ h1 {
 #categories {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 .category {
     flex: 1 1 300px;
     max-width: 300px;
     margin: 20px;
-    background-color: #eaeaea;
+    background-color: #ff2e63;
     border-radius: 20px;
     text-align: center;
     font-size: 20px;
 }
 .category:hover {
-    background-color: #ff2e63;
-}
-.category:hover a {
-    color: #eaeaea;
+    background-color: #252a34;
 }
 .category a {
     text-decoration: none;
-    color: #252a34;
+    color: #eaeaea;
 }
 .category img {
-    width: 100%;
+    width: calc(100% - 40px);
+    margin: 20px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }

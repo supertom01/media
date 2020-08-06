@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title class="title">Category | Media</title>
+    <link rel="stylesheet" href="/media2/css/media.css">
+    <link rel="stylesheet" href="/media2/css/style.css">
+    <script src="/media2/js/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.getJSON(window.location.href, function (data) {
+                if(data[1][0] === "UNAUTHORIZED") {
+                    alert("Whoops! The session has expired.")
+                } else if (window.location.href.includes("movie")) {
+                    $("title.title").text(data[0] + " | Media");
+                    $("h1.title").text(data[0]);
+                    //TODO: Makes use of the name of the project folder. This should be avoided!
+                    data[1].forEach(movie => {
+                        $("#categories").append(
+                            "<div class='category'>" +
+                            "<a href='/media2/films/" + movie.mid + "'>" +
+                            "<img src='/media2/pictures/" + movie.img + "/file' alt='" + movie.name + "'>" +
+                            "<p>" + movie.name + "</p>" +
+                            "</a>" +
+                            "</div>"
+                        )
+                    });
+                } else {
+                    $("#categories").append("Still handle pictures!");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1 class="title"></h1>
+    <div id="categories">
+
+    </div>
+</body>
+</html>

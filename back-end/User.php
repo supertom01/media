@@ -1,6 +1,7 @@
 <?php
 
 require_once "Database.php";
+require_once "Token.php";
 require_once dirname(__DIR__, 1) . "/Exceptions/LoginException.php";
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once "constants.php";
@@ -35,6 +36,7 @@ class User {
             if(!password_verify($password, $credentials[0]["password"])) {
                 throw new LoginException("Password invalid!");
             } else {
+                Token::issueJWT($username);
                 $this->username = $username;
             }
         } else {

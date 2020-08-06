@@ -71,6 +71,13 @@ main {
     background-color: #252a34;
     color: #eaeaea;
 }
+#signIn p {
+    text-align: center;
+}
+#signIn p a {
+    text-decoration: underline;
+    color: #eaeaea;
+}
 
 @media screen and (max-width: 400px) {
     #signIn {

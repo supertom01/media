@@ -14,7 +14,7 @@ class Movie {
     private ?string $summary;
     private ?array $subtitles;
 
-    private array $errors;
+    private static array $errors;
 
     private Database $db;
 
@@ -25,25 +25,26 @@ class Movie {
     public function __construct(int $id) {
         $this->id = $id;
         $this->db = new Database();
-        $this->errors = array();
+        self::$errors = array();
 
         try {
             // Get the name, filepath and summary of the movie.
-            $movie = $this->db->preparedQuery("SELECT * FROM movies WHERE mid = ?", array([$id, PDO::PARAM_INT]))[0];
+            $movie = $this->db->preparedQuery("SELECT * FROM movies WHERE mid = ?", array([$id, SQLITE3_INTEGER]))[0];
             $this->name = $movie["name"];
             $this->filepath = $movie["filepath"];
             $this->summary = $movie["summary"];
-
-            // Get the image/thumbnail of the movie.
-            $this->img = $this->db->preparedQuery("SELECT p.filepath FROM movies m, pictures p WHERE m.image = p.pid AND m.mid = ?",
-                array([$id, PDO::PARAM_INT]))[0]["filepath"];
+            $this->img = $movie["image"];
 
             // Get the subtitles of the movie.
-            $this->subtitles = $this->db->preparedQuery("SELECT s.filepath, s.language FROM subtitles s WHERE s.mid = ?",
-                array([$id, PDO::PARAM_INT]));
+            $this->subtitles = $this->db->preparedQuery("SELECT s.sid, s.language FROM subtitles s WHERE s.mid = ?",
+                array([$id, SQLITE3_INTEGER]));
         } catch (SQLException $se) {
             array_push($errors, $se->getMessage());
         }
+    }
+
+    public function getId():int {
+        return $this->id;
     }
 
     public function getName():string {
@@ -66,8 +67,19 @@ class Movie {
         return $this->subtitles;
     }
 
-    public function getErrors():string {
-        return implode("<br>", $this->errors);
+    public static function getErrors():string {
+        return implode("<br>", self::$errors);
+    }
+
+    public function setFilePath(string $filepath) {
+        $this->filepath = $filepath;
+        try {
+            return $this->db->preparedUpdate("UPDATE movies SET filepath = ? WHERE mid = " . $this->id,
+                array([$filepath, SQLITE3_TEXT]));
+        } catch (SQLException $e) {
+            array_push(self::$errors, $e->getMessage());
+            return false;
+        }
     }
 
     public function setName(string $name):bool {
@@ -76,7 +88,7 @@ class Movie {
             return $this->db->preparedUpdate("UPDATE movies SET name = ? WHERE mid = " . $this->id,
                 array([$name, SQLITE3_TEXT]));
         } catch (SQLException $e) {
-            array_push($this->errors, $e->getMessage());
+            array_push(self::$errors, $e->getMessage());
             return false;
         }
     }
@@ -87,7 +99,7 @@ class Movie {
             $success = $this->db->preparedUpdate("INSERT INTO pictures (filepath, thumbnail) VALUES (?, 1)",
                 array([$img, SQLITE3_TEXT]));
         } catch (SQLException $e) {
-            array_push($this->errors, $e->getMessage());
+            array_push(self::$errors, $e->getMessage());
             $success = false;
         }
 
@@ -96,7 +108,7 @@ class Movie {
         try {
             $success = $success && $this->db->executeUpdate("UPDATE movies SET image = " . $img_id . " WHERE mid = " . $this->id);
         } catch (SQLException $e) {
-            array_push($this->errors, $e->getMessage());
+            array_push(self::$errors, $e->getMessage());
             $success = false;
         }
 
@@ -109,7 +121,7 @@ class Movie {
             return $this->db->preparedUpdate("UPDATE movies SET summary = ? WHERE mid = " . $this->id,
                 array([$summary, SQLITE3_TEXT]));
         } catch (SQLException $e) {
-            array_push($this->errors, $e->getMessage());
+            array_push(self::$errors, $e->getMessage());
             return false;
         }
     }
@@ -120,8 +132,24 @@ class Movie {
             return $this->db->preparedUpdate("INSERT INTO subtitles (mid, language, filepath) VALUES (" . $this->id . ", ?, ?)",
                 array([$language, SQLITE3_TEXT], [$filepath, SQLITE3_TEXT]));
         } catch (SQLException $e) {
-            array_push($this->errors, $e->getMessage());
+            array_push(self::$errors, $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Get all available categories for a provided username.
+     * @param   string      $username   The username of the user who want access.
+     * @return  array|null              Null when nothing found, otherwise an array with the cid, name and filepath.
+     */
+    public static function getAvailableCategories(string $username) {
+        $db = new Database();
+        try {
+            return $db->preparedQuery("SELECT c.cid, c.image, c.name FROM categories c, access a, movie_category mc " .
+                "WHERE a.cid = c.cid AND mc.cid = c.cid AND a.username = ?", array([$username, SQLITE3_TEXT]));
+        } catch (SQLException $e) {
+            array_push(self::$errors, $e->getMessage());
+            return null;
         }
     }
 
@@ -153,7 +181,7 @@ class Movie {
                 array([$name, SQLITE3_TEXT], [$filepath, SQLITE3_TEXT], [$summary, SQLITE3_TEXT]));
             $id = $db->getDB()->lastInsertRowID();
         } catch (SQLException $e) {
-            $m_error = $e->getMessage();
+            array_push(self::$errors, $e->getMessage());
         }
 
         // Add a thumbnail to the movie.
@@ -165,7 +193,7 @@ class Movie {
                 $thumbnail = $thumbnail && $db->executeUpdate("UPDATE movies SET image = $img_id WHERE mid = $id");
             }
         } catch (SQLException $e) {
-            $t_error = $e->getMessage();
+            array_push(self::$errors, $e->getMessage());
         }
 
         // Add subtitles to the movie.
@@ -177,27 +205,7 @@ class Movie {
                 }
             }
         } catch (SQLException $e) {
-            $s_error = $e->getMessage();
-        }
-
-
-        if(!$movie) {
-            echo "Error while adding movie!<br>";
-            if(isset($m_error)) {
-                echo "DB error: " . $m_error . "<br>";
-            }
-        }
-        if(!$subtitle) {
-            echo "Error while adding subtitles!<br>";
-            if(isset($s_error)) {
-                echo "DB error: " . $s_error . "<br>";
-            }
-        }
-        if(!$thumbnail) {
-            echo "Error while adding thumbnail!<br>";
-            if(isset($t_error)) {
-                echo "DB error: " . $t_error . "<br>";
-            }
+            array_push(self::$errors, $e->getMessage());
         }
 
         return $id;

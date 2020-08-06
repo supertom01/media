@@ -1,0 +1,94 @@
+#fields {
+    display: grid;
+    grid-template-columns: 80% 20%;
+}
+#fields h3 {
+    margin: 0;
+}
+
+.typeLabel {
+    position: relative;
+}
+.typeLabel img, .typeLabel select {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.typeLabel .icon {
+    height: 40px;
+    width: 40px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background-color: #252a34;
+    z-index: 3;
+}
+.typeLabel .icon img {
+    height: 20px;
+    width: 20px;
+    margin: 10px;
+}
+.typeLabel select {
+    padding: 0;
+    margin-left: 40px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    width: calc(100% - 40px);
+}
+
+.checkboxLabel, .typeLabel {
+    width: calc(100% - 30px);
+    
+    position: relative;
+    height: 40px;
+    display: block;
+}
+.checkboxLabel {
+    margin: 10px 10px 10px 20px;
+}
+.typeLabel {
+    margin: 10px 20px 10px 10px;
+}
+.checkboxLabel img {
+    position: absolute;
+    left: 0;
+    z-index: 3;
+    width: 20px;
+    height: 20px;
+    margin: 10px;
+}
+.checkboxLabel .selected {
+    display: none;
+}
+.checkboxLabel input[type=checkbox], .checkboxLabel span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    border-radius: 20px;
+}
+.checkboxLabel input[type=checkbox] {
+    z-index: 2;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+}
+.checkboxLabel span {
+    display: flex;
+    z-index: 1;
+    background-color: #252a34;
+    /* justify-content: center; */
+    padding-left: 40px;
+    width: calc(100% - 40px);
+    align-items: center;
+}
+.checkboxLabel input[type=checkbox]:checked ~ span {
+    background-color: #eaeaea;
+    color: #252a34;
+}
+.checkboxLabel input[type=checkbox]:checked ~ .selected {
+    display: block;
+}
+.checkboxLabel input[type=checkbox]:checked ~ .not {
+    display: none;
+}

@@ -1,6 +1,6 @@
 {
   "name": "vendor_name/media2",
-  "description": "description",
+  "description": "A media management system intended for local networks only.",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
@@ -12,6 +12,10 @@
   "require": {
     "firebase/php-jwt": "5.2.*",
     "steampixel/simple-php-router": "*",
-    "ext-sqlite3": "*"
+    "ext-sqlite3": "*",
+    "ext-json": "*",
+    "kleiram/transmission-php": "dev-master",
+    "kriswallsmith/buzz": "0.9.0",
+    "ext-curl": "*"
   }
 }

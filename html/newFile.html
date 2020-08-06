@@ -1,0 +1,91 @@
+<!-- Colours are inspired by https://colorhunt.co/palette/17117 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/addCategory.css">
+    <link rel="stylesheet" href="css/addFile.css" type="text/css">
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Torrent | Media</title>
+</head>
+<body>
+<main>
+    <a id="back" onclick="history.back()">
+        <div class="button">
+            <img src="img/arrow.svg" alt="Back">
+            <span>Back</span>
+        </div>
+    </a>
+    <form method="post" enctype="multipart/form-data" id="upload">
+        <h1>Add Torrent</h1>
+        <div id="content">
+            <div id="image">
+                <img alt="Upload Preview" id="uploadPreview">
+            </div>
+            <div id="inputFields">
+                <div class="inputGroup">
+                    <div class="icon" title="Magnet Link">
+                        <img src="img/magnet.svg" alt="Magnet Link">
+                    </div>
+                    <input type="text" name="magnet-link" id="magnet_link" placeholder="Magnet Link">
+                </div>
+                <div class="inputGroup">
+                    <div class="icon" title="Torrent File">
+                        <img src="img/download.svg" alt="Torrent File">
+                    </div>
+                    <div class="input">
+                        <input onchange="updateButton('uploadTorrent', 'torrent_file')" type="file" name="torrent-file" id="torrent_file" accept=".torrent">
+                        <button id="uploadTorrent">Upload Torrent</button>
+                    </div>
+                </div>
+                <div class="inputGroup">
+                    <div class="icon" title="Image Upload">
+                        <img src="img/photo.svg" alt="Photo">
+                    </div>
+                    <div class="input">
+                        <input onchange="updateImage('image', 'uploadPreview', 'img', 3/4); updateButton('uploadIMG', 'img')" type="file" name="img" id="img" accept=".jpg">
+                        <button id="uploadIMG">Upload Image</button>
+                    </div>
+                </div>
+                <div class="inputGroup">
+                    <div class="icon" title="Torrent Name">
+                        <img src="img/name.svg" alt="Name">
+                    </div>
+                    <input type="text" name="name" id="name" placeholder="Torrent Name">
+                </div>
+                <div class="inputGroup">
+                    <div class="icon">
+                        <img src="img/select.svg" alt="Select">
+                    </div>
+                    <select name="type" id="type">
+                        <option value="MOVIE">Movie</option>
+                        <option value="IMG">Picture</option>
+                    </select>
+                </div>
+                <div class="inputGroup">
+                    <div class="icon">
+                        <img src="img/select.svg" alt="Select">
+                    </div>
+                    <select name="category" id="category">
+                        <option value="">None</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <input type="submit" value="Add Torrent">
+    </form>
+    <form method="post" id="chooseFiles" style="">
+        <h1>Select files</h1>
+        <div id="fields">
+            <h3>File</h3>
+            <h3>Type</h3>
+        </div>
+        <input type="submit" value="Download selected files">
+    </form>
+</main>
+</body>
+<script src="js/newFile.js"></script>
+<script src="js/image.js"></script>
+</html>
