@@ -15,7 +15,7 @@ It should already contain the provided schema as depicted in the schema.sql file
 Define the file `constants.php` in the folder `back-end` and put in here the `JWT_SECRET` constant.
 
 ## Roadmap
-* Simple user-interface.
-* Account authorization.
-* Movie playback and subtitle support.
+* Simple user-interface --> works, but that's it.
+* ~~Account authorization~~.
+* ~~Movie playback~~ and subtitle support --> work in progress.
 * Display of pictures. 
